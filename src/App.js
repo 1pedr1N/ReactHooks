@@ -3,18 +3,23 @@
 import { useState , useEffect} from "react";
 export default function App() {
 const [repositories, setRepositories] = useState([]);
-useEffect(  () => {
-const response =  fetch('https://api.github.com/users/1pedr1n/repos').then(response => response.json());
 
-setRepositories(response);
-}, []) 
 function handleFavorite(id) {
  const newRepositories = repositories.map(repo => {
-    return repo.id === id ? { ...repo, favorite: true } : repo;
+    return repo.id === id ? { ...repo, favorite: !repo.favorite } : repo;
   }
   );
   setRepositories(newRepositories);
 }
+useEffect(() => {
+  const filtered = repositories.filter(repo => repo.favorite);
+  document.title = `Você tem ${filtered.length} favoritos`;
+}, [repositories]);
+useEffect(  () => {
+  const response =  fetch('https://api.github.com/users/1pedr1n/repos').then(response => response.json());
+  
+  setRepositories(response);
+  }, []) 
   return (
     <> 
       <h1>Repositories</h1>
